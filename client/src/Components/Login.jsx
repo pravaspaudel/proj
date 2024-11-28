@@ -4,9 +4,42 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(`Email is ${email}, Password is ${password}`);
+    setEmail("");
+    setPassword("");
+
+    try {
+      const response = await fetch("http://localhost:8000/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          //basically send the state variables
+          email,
+          password,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Login failed:", errorData.message);
+        alert("Login failed: " + errorData.error);
+        return;
+      }
+
+      const data = await response.json();
+      console.log("Login successful :", data);
+      alert("Login successful!");
+    } catch (error) {
+      console.error("Error during login:", error.message);
+      alert("error occures", error.message);
+    }
+
+    setEmail("");
+    setPassword("");
   };
 
   return (

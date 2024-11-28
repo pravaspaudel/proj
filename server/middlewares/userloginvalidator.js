@@ -1,7 +1,6 @@
 import joi from "joi";
 
 const Schema = joi.object({
-  username: joi.string().min(3).max(15).required(),
   email: joi.string().email().required(),
   password: joi.string().min(8).required(),
 });
@@ -12,7 +11,9 @@ const userloginvalidator = (request, response, next) => {
   const { error } = validate;
 
   if (error) {
-    response.status(400).json("message:{error while }");
+    response
+      .status(400)
+      .json({ message: "some error of validator", error: error.message });
   } else {
     next();
   }

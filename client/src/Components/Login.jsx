@@ -1,8 +1,11 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,7 +20,6 @@ const Login = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          //basically send the state variables
           email,
           password,
         }),
@@ -29,10 +31,13 @@ const Login = () => {
         alert("Login failed: " + errorData.error);
         return;
       }
-
       const data = await response.json();
       console.log("Login successful :", data);
       alert("Login successful!");
+
+      navigate("/");
+
+      localStorage.setItem("jwttoken", data.token);
     } catch (error) {
       console.error("Error during login:", error.message);
       alert("error occures", error.message);

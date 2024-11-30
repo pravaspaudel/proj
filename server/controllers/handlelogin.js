@@ -1,5 +1,6 @@
 import usermodel from "../Model/login.model.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const handlelogin = async (request, response) => {
   try {
@@ -14,7 +15,12 @@ const handlelogin = async (request, response) => {
 
     const newUser = await usermodel.create({ email, password: hashedpassword });
 
-    response.status(200).json({ message: "user created successfully" });
+    const secretToken = process.env.SECRET_JWT;
+    const jwtoken = jwt.sign({ email }, secretToken, { expiresIn: "3h" });
+
+    response
+      .status(200)
+      .json({ message: "user created successfully", token: jwtoken });
   } catch (error) {
     console.log(`Error while creating`);
     response

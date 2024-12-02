@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 
 const handlelogin = async (request, response) => {
   try {
-    const { email, password } = request.body;
+    const { username, email, password } = request.body;
 
     if (!email || !password) {
       response.status(401).json({ message: "filed cannot be empty" });
@@ -13,10 +13,16 @@ const handlelogin = async (request, response) => {
 
     const hashedpassword = await bcrypt.hash(password, saltrounds);
 
-    const newUser = await usermodel.create({ email, password: hashedpassword });
+    const newUser = await usermodel.create({
+      username,
+      email,
+      password: hashedpassword,
+    });
 
     const secretToken = process.env.SECRET_JWT;
-    const jwtoken = jwt.sign({ email }, secretToken, { expiresIn: "3h" });
+    const jwtoken = jwt.sign({ username, email }, secretToken, {
+      expiresIn: "3h",
+    });
 
     response
       .status(200)
